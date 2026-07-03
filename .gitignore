@@ -1,0 +1,16 @@
+build/
+devel/
+logs/
+.catkin_tools/
+*.log
+.vscode/
+*.pcd
+.catkin_workspace
+*.pdf
+*.png
+*.csv
+*.swp
+*.bag
+*.bag.active
+__pycache__
+src/EPIC_poongsan/src/EPIC/src/global_planner/exploration_manager/records/

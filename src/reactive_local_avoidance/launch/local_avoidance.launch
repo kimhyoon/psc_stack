@@ -1,0 +1,12 @@
+<launch>
+  <!-- 입력 토픽은 real.yaml 의 odometry_topic / cloud_topic (exploration_node ns)
+       에서만 읽는다 — 노드가 파라미터로 직접 읽으며 폴백 없음.
+       (USE_LIVOX_LIDAR=ON 빌드만 local_avoidance/lidar_topic 별도 필요.)
+       EPIC 없이 단독 벤치테스트 시엔 먼저:
+         rosparam load $(find epic_planner)/config/real.yaml /exploration_node -->
+
+  <!-- load parameters into /local_avoidance (absolute namespace used in code) -->
+  <rosparam command="load" file="$(find local_avoidance)/config/local_avoidance.yaml"/>
+
+  <node pkg="local_avoidance" type="local_avoidance" name="local_avoidance" output="screen"/>
+</launch>

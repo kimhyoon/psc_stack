@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>local_avoidance</name>
+  <version>0.0.1</version>
+  <description>LiDAR potential-field local avoidance (3D / Livox)</description>
+  <maintainer email="rhanehdfurrl@gmail.com">ml</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>mavros_msgs</depend>
+  <depend>tf</depend>
+  <depend>pcl_ros</depend>
+  <depend>pcl_conversions</depend>
+  <!-- livox 입력 모드(USE_LIVOX_LIDAR=ON, 기본)에서만 실제로 필요.
+       워크스페이스에 livox_ros_driver2 가 있으면 빌드 순서 보장용으로 유효하고,
+       없는 PC 에서는 catkin 이 시스템 의존성으로 간주해 무시하므로
+       -DUSE_LIVOX_LIDAR=OFF 와 함께라면 이 줄이 있어도 빌드가 깨지지 않는다.
+       (rosdep install 을 쓸 때만 - -skip-keys livox_ros_driver2 필요) -->
+  <depend>livox_ros_driver2</depend>
+</package>
