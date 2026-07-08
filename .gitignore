@@ -1,6 +1,7 @@
 build/
 devel/
 logs/
+tmp/
 .catkin_tools/
 *.log
 .vscode/
@@ -13,4 +14,4 @@ logs/
 *.bag
 *.bag.active
 __pycache__
-src/EPIC_poongsan/src/EPIC/src/global_planner/exploration_manager/records/
+EPIC_poongsan/src/EPIC/src/global_planner/exploration_manager/records/

@@ -218,9 +218,10 @@ struct VpPipelineStats {
   int ok = 0;               // 최종 살아남은 클러스터(=뷰포인트 수)
 
   std::string str() const {
-    char b[192];
+    char b[256];
     snprintf(b, sizeof(b),
-             "pipe[tot=%d dorm=%d unreach=%d cons=%d nocand=%d topo=%d novis=%d ok=%d]",
+             "pipeline[total=%d dormant=%d prev_unreachable=%d evaluated=%d "
+             "no_candidate=%d topo_unreachable=%d no_visibility=%d survived=%d]",
              total, dormant, unreachable_pre, considered, no_candidates,
              topo_unreachable, no_visibility, ok);
     return b;
@@ -300,6 +301,8 @@ public:
   // unordered_map<int, ClusterInfo::Ptr> new_clusters_;
   std::list<ClusterInfo::Ptr> cluster_list_;
   VpPipelineStats vp_stats_; // 마지막 generateTSPViewpoints 단계별 통계
+  // 현재 프론티어 셀 개수 (epic.log 진단용 — frt_map_ 은 private 라 getter 제공)
+  size_t frontierCellCount() const { return frtd_.frt_map_.size(); }
   void printMemoryCost();
 
   void viz_pocc();

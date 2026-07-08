@@ -18,9 +18,12 @@ local_avoidance/enable: false
 
 # 기록(record) 스위치 — record_on_goal.py 가 이 값들만 읽는다 (launch 인자 아님).
 # 시작: /planning/state 첫 수신(EPIC FSM 기동) / 종료: FSM LANDED 시 정상 마감.
-record/enable: true   # 전체 마스터. false 면 기록 노드가 뜨자마자 스스로 종료.
-record/bag: false       # .bag (rosbag record)
-record/log: true       # .log (/rosout 콘솔 로그)
+record/enable: true    # 전체 마스터. false 면 기록 노드가 뜨자마자 스스로 종료.
+record/bag: false      # .bag (rosbag record)
+record/log: true       # .all-rosout.log (/rosout_agg 콘솔 로그 "전체")
+record/epic: true      # .epic.log (EPIC 상태 스냅샷 세로 블록: 시간/비행경과/mavros/
+                       #  pos/fsm/계획결과/클러스터/뷰포인트+파이프라인/프론티어/TSP/goal)
+record/epic_period: 1.0 # .epic.log 기록 주기 [s] (FSM 상태·global 결과 변화 시엔 즉시)
 record/params: true    # .params.yaml (rosparam dump 메타데이터)
 record/events: true    # .events.log (구조화 이벤트)
 record/dir: ""         # 저장 폴더. 빈 값 = <epic_planner 패키지>/records 자동 (없으면 생성)

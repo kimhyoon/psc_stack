@@ -102,9 +102,11 @@ public:
       // --- 진짜 새로운 signature: 직전 억제 요약을 꼬리에 붙여 즉시 발행 ---
       std::string suffix;
       if (c.cycles > 0)
-        suffix = " (prev cycle x" + std::to_string(c.cycles) + "/" + fmt1(now - c.cycle_start) + "s)";
+        suffix = " (prev cycling x" + std::to_string(c.cycles) + " over " +
+                 fmt1(now - c.cycle_start) + "s)";
       else if (c.repeats > 0)
-        suffix = " (prev x" + std::to_string(c.repeats) + "/" + fmt1(now - c.first_rep) + "s)";
+        suffix = " (prev repeated x" + std::to_string(c.repeats) + " over " +
+                 fmt1(now - c.first_rep) + "s)";
       emitLine(cat, sig, detail + suffix, now, level);
       c.prev_sig = c.sig;
       c.sig = sig;
@@ -119,7 +121,8 @@ public:
 
     // --- signature 동일 ---
     if (detail != c.detail && (now - c.last_emit) >= min_interval) {
-      std::string suffix = c.repeats > 0 ? " (x" + std::to_string(c.repeats) + ")" : "";
+      std::string suffix =
+          c.repeats > 0 ? " (repeated x" + std::to_string(c.repeats) + ")" : "";
       emitLine(cat, sig, detail + suffix, now, level);
       c.detail = detail;
       c.repeats = 0;
@@ -133,8 +136,8 @@ public:
     c.repeats++;
     if ((now - c.last_emit) >= heartbeat_) {
       emitLine(cat, sig,
-               c.detail + " (still, x" + std::to_string(c.repeats) + "/" +
-                   fmt1(now - c.first_rep) + "s)",
+               c.detail + " (still repeating x" + std::to_string(c.repeats) +
+                   " over " + fmt1(now - c.first_rep) + "s)",
                now, level);
       c.last_emit = now;
       c.repeats = 0;

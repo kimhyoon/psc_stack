@@ -120,21 +120,23 @@ int FastExplorationFSM::callExplorationPlanner() {
   return result;
 }
 
-void FastExplorationFSM::triggerCallback(const nav_msgs::PathConstPtr &msg) {
-  if (msg->poses[0].pose.position.z < -0.1)
-    return;
-
+// 미션 시작 공용 진입점. 트리거 소스와 무관하게 동일 동작:
+//  - rviz 2D Nav Goal (-> waypoint_generator -> /waypoint_generator/waypoints)
+//  - rostopic pub /waypoint_generator/waypoints ... (직접 발행)
+//  - rosservice call /srv_start (rviz 없는 환경용)
+bool FastExplorationFSM::startMission(const std::string &source) {
   if (state_ != WAIT_TRIGGER)
-    return;
+    return false;
   fd_->trigger_ = true;
   total_time_ = ros::Time::now().toSec();
   // 미션 t0 재설정(+상대시간이 트리거 기준이 됨) + 파라미터 스냅샷 재발행
-  // (record_on_goal 이 goal 시점부터 기록하므로 여기서 다시 내보내야 bag/log에 남는다)
+  // (레코더가 이벤트 스트림을 받는 시점 이후에 남도록)
   elog_.markMissionStart();
   char tp[96];
   snprintf(tp, sizeof(tp), "trigger received | pos=(%.2f, %.2f, %.2f)",
            fd_->odom_pos_.x(), fd_->odom_pos_.y(), fd_->odom_pos_.z());
-  elog_.log("EVENT", "2D-Nav-Goal trigger", tp, 0.0, EventLogger::L_INFO, true);
+  elog_.log("EVENT", "mission start (" + source + ")", tp, 0.0,
+            EventLogger::L_INFO, true);
   logParamsEvents(true);
 
   if (fp_->takeoff_height_ > 0.0) {
@@ -145,11 +147,18 @@ void FastExplorationFSM::triggerCallback(const nav_msgs::PathConstPtr &msg) {
     takeoff_yaw_ = fd_->odom_yaw_;
     hover_enter_time_ = ros::Time::now();
     hover_stable_since_ = ros::Time(0);
-    transitState(TAKEOFF_HOVER, "triggerCallback: takeoff & hover");
+    transitState(TAKEOFF_HOVER, source + ": takeoff & hover");
   } else {
     // takeoff_height disabled -> original behaviour (start exploring immediately).
-    transitState(PLAN_TRAJ_EXP, "triggerCallback");
+    transitState(PLAN_TRAJ_EXP, source);
   }
+  return true;
+}
+
+void FastExplorationFSM::triggerCallback(const nav_msgs::PathConstPtr &msg) {
+  if (msg->poses.empty() || msg->poses[0].pose.position.z < -0.1)
+    return;
+  startMission("waypoints trigger");
 }
 
 void FastExplorationFSM::avoidFlagCallback(const std_msgs::Int16ConstPtr &msg) {
